@@ -6830,7 +6830,8 @@ export const rov: IRovSkin[] = [
     id: 981,
     name: 'Kaine MVP Enigma',
     base: 'Kaine',
-    image: require('~/assets/images/skin/kaine-mvp-enigma.jpeg')
+    image: require('~/assets/images/skin/kaine-mvp-enigma.jpeg'),
+    position: 6
   },
   {
     id: 982,

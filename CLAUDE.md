@@ -16,6 +16,9 @@ yarn start
 
 # Lint code
 yarn lint
+
+# Update Python skin database from TypeScript source
+cd ai_python && source venv/bin/activate && python convert_skin.py
 ```
 
 ## Project Overview
