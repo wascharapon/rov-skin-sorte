@@ -12,7 +12,7 @@ crop_areas = [
 ]
 base_dir = os.path.dirname(os.path.abspath(__file__))
 skin_folder = os.path.join(base_dir, "images", "web")
-max_files = 10  # จำนวนไฟล์สูงสุดที่ต้องการประมวลผล (ตั้งเป็น None สำหรับไฟล์ทั้งหมด)
+max_files = 5  # จำนวนไฟล์สูงสุดที่ต้องการประมวลผล (ตั้งเป็น None สำหรับไฟล์ทั้งหมด)
 stringIsHas = ["มีแล้ว", "ยีแล้ว", "บีแล้ว", "ปีแล้ว"]
 
 def extract_text_from_image(image: Image.Image) -> str:
