@@ -4,21 +4,24 @@ import pytesseract
 import json
 from rapidfuzz import process
 import shutil
+import re
 
+max_files = 999  # จำนวนไฟล์สูงสุดที่ต้องการประมวลผล (ตั้งเป็น None สำหรับไฟล์ทั้งหมด)
 # กำหนด path
 crop_areas = [
     # (x, y, width, height)
-    (0, 1300, 1180, 360),
+    (140, 1480, 600, 180),
 ]
 base_dir = os.path.dirname(os.path.abspath(__file__))
-skin_folder = os.path.join(base_dir, "images", "web_test")
-max_files = 5  # จำนวนไฟล์สูงสุดที่ต้องการประมวลผล (ตั้งเป็น None สำหรับไฟล์ทั้งหมด)
+skin_folder = os.path.join(base_dir, "images", "web")
 stringIsHas = ["มีแล้ว", "ยีแล้ว", "บีแล้ว", "ปีแล้ว"]
 
 def extract_text_from_image(image: Image.Image) -> str:
     """ดึงข้อความจากภาพโดยใช้ OCR พร้อมปรับภาพ"""
-    image = image
-    return pytesseract.image_to_string(image, lang="tha+eng", config="--psm 6")
+    # แปลงภาพเป็นขาวดำก่อนทำ OCR
+    grayscale_image = image.convert('L')
+    # ปรับภาพขาวให้เป็นดำ แล้วก็ดำเป็นขาว
+    return pytesseract.image_to_string(grayscale_image, lang="eng", config="--psm 6")
 
 
 def crop_images(img: Image.Image, crop_areas):
@@ -96,12 +99,14 @@ def process_single_file(file_path, filename):
             
             text = extract_text_from_image(cropped_img)
             processed_text = " ".join(text.split())
-            removeText = ['"']
+            removeText = ['"', '\\', '/']
             replaceText = [" | "]
             for r in removeText:
                 processed_text = processed_text.replace(r, "")
             for r in replaceText:
                 processed_text = processed_text.replace(r, " ")
+            # ลบอักขระพิเศษที่ไม่ใช่ตัวอักษรและตัวเลข
+            processed_text = re.sub(r'[^\w\s]', '', processed_text)
                 
             print(f"   📝 OCR Text: '{processed_text}'")
             skins.append(processed_text)
@@ -240,12 +245,15 @@ def main():
                         print(f"   🆔 ID: {match['id']}")
                         print(f"   🖼️  Image: {match['image']}")
                         
-                        # คัดลอกไฟล์รูปไปยัง mapSkin
+                        # คัดลอกไฟล์รูปไปยัง mapSkin (ข้าม evo)
                         try:
                             target_filename = os.path.basename(match['image'])
-                            target_path = os.path.join(map_skin_dir, target_filename)
-                            shutil.copy2(current_file_path, target_path)
-                            print(f"   📁 Copied to: images/mapSkin/{target_filename}")
+                            if 'evo' in target_filename.lower():
+                                print(f"   ⏭️  Skipped (contains 'evo'): {target_filename}")
+                            else:
+                                target_path = os.path.join(map_skin_dir, target_filename)
+                                shutil.copy2(current_file_path, target_path)
+                                print(f"   📁 Copied to: images/mapSkin/{target_filename}")
                         except Exception as e:
                             print(f"   ❌ Copy failed: {e}")
                         print()
@@ -267,10 +275,10 @@ def main():
     print(f"✅ Total matches found: {total_matches}")
     print(f"📁 Files copied to mapSkin: {total_matches}")
     
-    if all_matched_results:
-        print("\n" + "=" * 40)
-        print("📋 ALL MATCHED RESULTS (JSON)")
-        print("=" * 40)
-        print(json.dumps(all_matched_results, indent=2, ensure_ascii=False))
+    # if all_matched_results:
+    #     print("\n" + "=" * 40)
+    #     print("📋 ALL MATCHED RESULTS (JSON)")
+    #     print("=" * 40)
+    #     print(json.dumps(all_matched_results, indent=2, ensure_ascii=False))
 
 main()
