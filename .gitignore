@@ -8,3 +8,4 @@ static/
 *.json.gz
 routes.json
 *.DB_Store
+python/.DS_Store
