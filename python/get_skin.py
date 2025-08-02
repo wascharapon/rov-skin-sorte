@@ -11,7 +11,7 @@ crop_areas = [
     (0, 1300, 1180, 360),
 ]
 base_dir = os.path.dirname(os.path.abspath(__file__))
-skin_folder = os.path.join(base_dir, "images", "web")
+skin_folder = os.path.join(base_dir, "images", "web_test")
 max_files = 5  # จำนวนไฟล์สูงสุดที่ต้องการประมวลผล (ตั้งเป็น None สำหรับไฟล์ทั้งหมด)
 stringIsHas = ["มีแล้ว", "ยีแล้ว", "บีแล้ว", "ปีแล้ว"]
 
