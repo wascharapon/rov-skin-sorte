@@ -31,4 +31,4 @@ fi
 
 #CMD List
 # source venv/bin/activate && uvicorn main:app --reload
-# source venv/bin/activate && python convert_skin.py
+# source venv/bin/activate && python get_skin.py
